@@ -1,39 +1,44 @@
 import re
 buffer_len = 1
+flag2=False
+flag=False
 work_buffer = ""
-b = ""
-
+pattern = '[0-9a-zA-Zа-яА-ЯёЁ]+'
+h = 0
 try:
     while 1:
-        print("\n введите число k")
-        number = (input("k="))
-        if '0' <= number <= '9':
-            k = int(number)
+        k = input('Введите число k:')
+        if (k >= '1') and (k <= '9'):
+            digit = int(k)
             break
         else:
-            print('это не цифра')
-
-    with open("laba 2.txt", "r") as file:
-        print("\n результат работы программы \n")
+            print('введите число большее нуля')
+    with open("laba 2.txt", 'r+', encoding='utf-8') as file:
+        print("\n Результат работы программы \n")
         buffer = file.read(buffer_len)
-
+        flag = True
         if not buffer:
-            print("\n рабочий файл пустой, измените содержание файла")
-
+            print("\n Рабочий файл пустой, измените содержание файла")
         while buffer:
             work_buffer += buffer
             if re.findall(r'[.!?]', buffer):
-                b = re.split(r'\W', work_buffer)
-                b = b[:len(b)-1]
-                if len(b) == k:
-                    print(work_buffer)
-                g = ""
+                if len(work_buffer) == 1:
+                    work_buffer = ""
+                    flag = True
+                if not flag:
+                    h += 1
+                if len(re.findall(pattern, work_buffer)) == digit:
+                    if not work_buffer[0] == " ":
+                        work_buffer = " " + work_buffer
+                    print("Предложение", h + 1, ":", work_buffer[:len(work_buffer) - 1])
+                    flag2 = True
                 work_buffer = ""
-
+                flag = False
             buffer = file.read(buffer_len)
-        if re.findall(r'[^.!?]', work_buffer):  # Если буфер переполнен и нет окончания предложения
-            print("\nФайл *.txt не содержит знаков окончания предложения.\nОткорректируйте файл *.txt в директории или переименуйте существующий *.txt файл.")
-
-
+        if not flag2:
+            print("\n нет предложений подходящих под условие")
+        if h == 0:
+            print("\n в файле нет предложений подходящих к условию")
 except FileNotFoundError:
-    print("\n файл *.txt в директории проекта не обнаружен.\n Добавьте файл в директорию или переименуйте существующий")
+    print("\n Файл laba 2.txt в директории проекта не обнаружен."
+          "\n Добавьте файл в директорию или переименуйте существующий")
